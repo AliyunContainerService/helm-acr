@@ -1,12 +1,12 @@
 name: "push"
-version: "0.8.1"
-usage: "Please see https://github.com/chartmuseum/helm-push for usage"
-description: "Push chart package to ChartMuseum"
+version: "0.7.1"
+usage: "Please see https://github.com/AliyunContainerService/helm-acr for usage"
+description: "Push chart package to Alibaba Container Registry"
 command: "$HELM_PLUGIN_DIR/bin/helmpush"
 downloaders:
-- command: "bin/helmpush"
-  protocols:
-  - "cm"
+  - command: "bin/helmpush"
+    protocols:
+      - "acr"
 useTunnel: false
 hooks:
   install: "cd $HELM_PLUGIN_DIR; scripts/install_plugin.sh"

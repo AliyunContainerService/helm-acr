@@ -1,3 +1,5 @@
+// Modifications copyright (C) 2019 Alibaba Group Holding Limited / Yuning Xie (xyn1016@gmail.com)
+
 package chartmuseum
 
 import (
@@ -36,11 +38,33 @@ func (client *Client) UploadChartPackage(chartPackagePath string, force bool) (*
 		return nil, err
 	}
 
-	if client.opts.accessToken != "" {
+	accessToken := client.opts.accessToken
+
+	if client.opts.autoTokenAuth {
+		resp, err := client.Do(req)
+		if err != nil {
+			return resp, err
+		} else if resp.StatusCode == http.StatusUnauthorized {
+			token, err := client.GetAuthTokenFromResponse(resp)
+			if err != nil {
+				return nil, err
+			}
+			accessToken = token
+
+			err = setUploadChartPackageRequestBody(req, chartPackagePath)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return resp, err
+		}
+	}
+
+	if accessToken != "" {
 		if client.opts.authHeader != "" {
 			req.Header.Set(client.opts.authHeader, client.opts.accessToken)
 		} else {
-			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", client.opts.accessToken))
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 		}
 	} else if client.opts.username != "" && client.opts.password != "" {
 		req.SetBasicAuth(client.opts.username, client.opts.password)
