@@ -1,3 +1,5 @@
+// Modifications copyright (C) 2019 Alibaba Group Holding Limited / Yuning Xie (xyn1016@gmail.com)
+
 package main
 
 import (
@@ -220,6 +222,7 @@ func (p *pushCmd) push() error {
 		cm.CertFile(p.certFile),
 		cm.KeyFile(p.keyFile),
 		cm.InsecureSkipVerify(p.insecureSkipVerify),
+		cm.AutoTokenAuth(true),
 	)
 
 	if err != nil {
@@ -294,6 +297,7 @@ func (p *pushCmd) download(fileURL string) error {
 		cm.CertFile(p.certFile),
 		cm.KeyFile(p.keyFile),
 		cm.InsecureSkipVerify(p.insecureSkipVerify),
+		cm.AutoTokenAuth(true),
 	)
 
 	if err != nil {

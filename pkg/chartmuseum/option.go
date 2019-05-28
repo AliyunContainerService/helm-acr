@@ -1,3 +1,5 @@
+// Modifications copyright (C) 2019 Alibaba Group Holding Limited / Yuning Xie (xyn1016@gmail.com)
+
 package chartmuseum
 
 import (
@@ -21,6 +23,7 @@ type (
 		certFile           string
 		keyFile            string
 		insecureSkipVerify bool
+		autoTokenAuth      bool
 	}
 )
 
@@ -98,5 +101,11 @@ func KeyFile(keyFile string) Option {
 func InsecureSkipVerify(insecureSkipVerify bool) Option {
 	return func(opts *options) {
 		opts.insecureSkipVerify = insecureSkipVerify
+	}
+}
+
+func AutoTokenAuth(autoTokenAuth bool) Option {
+	return func(opts *options) {
+		opts.autoTokenAuth = autoTokenAuth
 	}
 }
