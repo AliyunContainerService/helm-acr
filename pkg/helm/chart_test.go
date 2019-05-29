@@ -22,7 +22,7 @@ func TestSetVersion(t *testing.T) {
 
 func TestGetChartByName(t *testing.T) {
 	// Bad name
-	_, err := GetChartByName("/non/existant/path/mychart-0.1.0.tgz")
+	_, err := GetChartByName("/non/existent/path/mychart-0.1.0.tgz")
 	if err == nil {
 		t.Error("expected error getting chart with bad name, instead got nil")
 	}

@@ -104,6 +104,7 @@ func InsecureSkipVerify(insecureSkipVerify bool) Option {
 	}
 }
 
+//AutoTokenAuth to indicate if helm-push need to get auth token from auth server automatically
 func AutoTokenAuth(autoTokenAuth bool) Option {
 	return func(opts *options) {
 		opts.autoTokenAuth = autoTokenAuth

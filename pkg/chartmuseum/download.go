@@ -55,6 +55,7 @@ func (client *Client) DownloadFile(filePath string) (*http.Response, error) {
 	return client.Do(req)
 }
 
+// GetAuthTokenFromResponse get AuthToken from auth challenges
 func (client *Client) GetAuthTokenFromResponse(resp *http.Response) (string, error) {
 	authHeader := resp.Header.Get("Www-Authenticate")
 	authHeader = strings.Split(authHeader, " ")[1]
