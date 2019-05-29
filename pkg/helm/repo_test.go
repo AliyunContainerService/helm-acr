@@ -15,8 +15,8 @@ var (
 )
 
 func TestGetRepoByName(t *testing.T) {
-	// Non-existant repo
-	_, err := GetRepoByName("nonexistantrepo")
+	// Non-existent repo
+	_, err := GetRepoByName("nonexistentrepo")
 	if err == nil {
 		t.Error("expecting error with bad repo name, instead got nil")
 	}

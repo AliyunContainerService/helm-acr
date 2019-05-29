@@ -81,7 +81,7 @@ func TestUploadChartPackage(t *testing.T) {
 	}
 
 	// Bad package path
-	resp, err = cmClient.UploadChartPackage("/non/existant/path/mychart-0.1.0.tgz", false)
+	resp, err = cmClient.UploadChartPackage("/non/existent/path/mychart-0.1.0.tgz", false)
 	if err == nil {
 		t.Error("expecting error with bad package path, instead got nil")
 	}
