@@ -6,9 +6,12 @@ jobs:
   build:
     docker:
     - image: circleci/golang:1.10
-    working_directory: /go/src/github.com/AliyunContainerService/helm-acr
+    working_directory: /go/src/github.com/chartmuseum/helm-push
     steps:
     - checkout
+    - run:
+        name: install dependencies
+        command: sudo apt-get update && sudo apt-get install -y python-pip && pip install virtualenv
     - setup_remote_docker:
           docker_layer_caching: true
     - run:
