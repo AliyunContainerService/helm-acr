@@ -1,5 +1,6 @@
 # helm acr
 
+[![CircleCI](https://circleci.com/gh/AliyunContainerService/helm-acr.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/helm-acr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/helm-acr)](https://goreportcard.com/report/github.com/AliyunContainerService/helm-acr)
 
 Helm plugin to push chart package to [ChartMuseum](https://github.com/helm/chartmuseum).
