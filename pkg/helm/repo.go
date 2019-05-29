@@ -5,9 +5,9 @@ import (
 	helm_env "k8s.io/helm/pkg/helm/environment"
 	"k8s.io/helm/pkg/helm/helmpath"
 	"k8s.io/helm/pkg/repo"
+	urllib "net/url"
 	"os"
 	"strings"
-	urllib "net/url"
 )
 
 type (

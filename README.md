@@ -1,5 +1,7 @@
 # helm acr
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/helm-acr)](https://goreportcard.com/report/github.com/AliyunContainerService/helm-acr)
+
 Helm plugin to push chart package to [ChartMuseum](https://github.com/helm/chartmuseum).
 
 This project is forked from [chartmuseum/helm-push](https://github.com/chartmuseum/helm-push). 
