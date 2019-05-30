@@ -8,15 +8,15 @@ if [ -n "${HELM_PUSH_PLUGIN_NO_INSTALL_HOOK}" ]; then
 fi
 
 version="$(cat plugin.yaml | grep "version" | cut -d '"' -f 2)"
-echo "Downloading and installing helm-push v${version} ..."
+echo "Downloading and installing helm-acr v${version} ..."
 
 url=""
 if [ "$(uname)" = "Darwin" ]; then
-    url="https://github.com/chartmuseum/helm-push/releases/download/v${version}/helm-push_${version}_darwin_amd64.tar.gz"
+    url="https://github.com/AliyunContainerService/helm-acr/releases/download/v${version}/helm-acr_${version}_darwin_amd64.tar.gz"
 elif [ "$(uname)" = "Linux" ] ; then
-    url="https://github.com/chartmuseum/helm-push/releases/download/v${version}/helm-push_${version}_linux_amd64.tar.gz"
+    url="https://github.com/AliyunContainerService/helm-acr/releases/download/v${version}/helm-acr_${version}_linux_amd64.tar.gz"
 else
-    url="https://github.com/chartmuseum/helm-push/releases/download/v${version}/helm-push_${version}_windows_amd64.tar.gz"
+    url="https://github.com/AliyunContainerService/helm-acr/releases/download/v${version}/helm-acr_${version}_windows_amd64.tar.gz"
 fi
 
 echo $url
