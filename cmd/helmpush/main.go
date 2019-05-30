@@ -52,6 +52,8 @@ type (
 	}
 )
 
+const Protocol = "acr://"
+
 var (
 	globalUsage = `Helm plugin to push chart package to ChartMuseum
 
@@ -73,8 +75,8 @@ func newPushCmd(args []string) *cobra.Command {
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			// If there are 4 args, this is likely being used as a downloader for cm:// protocol
-			if len(args) == 4 && strings.HasPrefix(args[3], "cm://") {
+			// If there are 4 args, this is likely being used as a downloader for acr:// protocol
+			if len(args) == 4 && strings.HasPrefix(args[3], Protocol) {
 				p.setFieldsFromEnv()
 				return p.download(args[3])
 			}
@@ -203,12 +205,12 @@ func (p *pushCmd) push() error {
 		password = p.password
 	}
 
-	// in case the repo is stored with cm:// protocol, remove it
+	// in case the repo is stored with acr:// protocol, remove it
 	var url string
 	if p.useHTTP {
-		url = strings.Replace(repo.URL, "cm://", "http://", 1)
+		url = strings.Replace(repo.URL, Protocol, "http://", 1)
 	} else {
-		url = strings.Replace(repo.URL, "cm://", "https://", 1)
+		url = strings.Replace(repo.URL, Protocol, "https://", 1)
 	}
 
 	client, err := cm.NewClient(

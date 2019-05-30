@@ -1,4 +1,4 @@
-name: "acr"
+name: "push"
 version: "0.7.1"
 usage: "Please see https://github.com/AliyunContainerService/helm-acr for usage"
 description: "Push chart package to ChartMuseum"
