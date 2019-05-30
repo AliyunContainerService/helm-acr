@@ -64,6 +64,8 @@ type (
 	}
 )
 
+const Protocol = "acr://"
+
 var (
 	v2settings  v2environment.EnvSettings
 	settings    = cli.New()
@@ -95,8 +97,8 @@ func newPushCmd(args []string) *cobra.Command {
 
 			p.out = cmd.OutOrStdout()
 
-			// If there are 4 args, this is likely being used as a downloader for cm:// protocol
-			if len(args) == 4 && strings.HasPrefix(args[3], "cm://") {
+			// If there are 4 args, this is likely being used as a downloader for acr:// protocol
+			if len(args) == 4 && strings.HasPrefix(args[3], Protocol) {
 				p.setFieldsFromEnv()
 				return p.download(args[3])
 			}
@@ -274,12 +276,12 @@ func (p *pushCmd) push() error {
 		password = p.password
 	}
 
-	// in case the repo is stored with cm:// protocol, remove it
+	// in case the repo is stored with acr:// protocol, remove it
 	var url string
 	if p.useHTTP {
-		url = strings.Replace(repo.Config.URL, "cm://", "http://", 1)
+		url = strings.Replace(repo.Config.URL, Protocol, "http://", 1)
 	} else {
-		url = strings.Replace(repo.Config.URL, "cm://", "https://", 1)
+		url = strings.Replace(repo.Config.URL, Protocol, "https://", 1)
 	}
 
 	client, err := cm.NewClient(

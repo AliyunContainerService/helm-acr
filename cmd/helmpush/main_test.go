@@ -1,3 +1,5 @@
+// Modifications copyright (C) 2019 Alibaba Group Holding Limited / Yuning Xie (xyn1016@gmail.com)
+
 package main
 
 import (
@@ -123,17 +125,17 @@ func TestPushCmd(t *testing.T) {
 		t.Error("expecting error with bad response body, instead got nil")
 	}
 
-	// cm:// downloader
+	// acr:// downloader
 	statusCode = 200
 	os.Setenv("HELM_REPO_USE_HTTP", "true")
-	downloaderBaseURL := strings.Replace(ts.URL, "http://", "cm://", 1)
+	downloaderBaseURL := strings.Replace(ts.URL, "http://", Protocol, 1)
 
 	// fails with no file path
 	args = []string{"", "", "", downloaderBaseURL}
 	cmd = newPushCmd(args)
 	err = cmd.RunE(cmd, args)
 	if err == nil {
-		t.Error("expecting error with bad cm:// url, instead got nil")
+		t.Error("expecting error with bad acr:// url, instead got nil")
 	}
 
 	// index.yaml
