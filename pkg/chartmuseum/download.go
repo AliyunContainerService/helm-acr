@@ -85,7 +85,7 @@ func (client *Client) GetAuthTokenFromResponse(resp *http.Response) (string, err
 }
 
 func (client *Client) getBearerToken(realm, service, scope string) (string, error) {
-	authReq, err := http.NewRequest("POST", realm, nil)
+	authReq, err := http.NewRequest("GET", realm, nil)
 	if err != nil {
 		return "", err
 	}
