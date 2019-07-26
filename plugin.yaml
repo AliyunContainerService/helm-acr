@@ -1,4 +1,4 @@
-name: "push"
+name: "helm-acr"
 version: "0.7.1"
 usage: "Please see https://github.com/AliyunContainerService/helm-acr for usage"
 description: "Push chart package to Alibaba Container Registry"
