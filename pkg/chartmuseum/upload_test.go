@@ -214,6 +214,7 @@ func TestUploadChartPackageWithTlsServer(t *testing.T) {
 		Password("pass"),
 		ContextPath("/my/context/path"),
 		CAFile(testCAPath),
+		InsecureSkipVerify(true),
 	)
 	if err != nil {
 		t.Fatalf("[upload with ca file] expect creating a client instance but met error: %s", err)
@@ -268,6 +269,7 @@ func TestUploadChartPackageWithVerifyingClientCert(t *testing.T) {
 		KeyFile(testServerKeyPath),
 		CertFile(testServerCertPath),
 		CAFile(testCAPath),
+		InsecureSkipVerify(true),
 	)
 	if err != nil {
 		t.Fatalf("[upload with cert and key files] expect creating a client instance but met error: %s", err)

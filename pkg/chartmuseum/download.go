@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 )
@@ -39,6 +40,13 @@ func (client *Client) DownloadFile(filePath string) (*http.Response, error) {
 			accessToken = token
 		} else {
 			return resp, err
+		}
+	}
+
+	if client.opts.debug {
+		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Token %s\n", accessToken)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -80,6 +88,13 @@ func (client *Client) GetAuthTokenFromResponse(resp *http.Response) (string, err
 	}
 	if scope == "" {
 		return "", fmt.Errorf("missing scope in bearer auth challenge")
+	}
+
+	if client.opts.debug {
+		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Realm %s Service %s Scope %s\n", realm, service, scope)
+		if err != nil {
+			return "", err
+		}
 	}
 	return client.getBearerToken(realm, service, scope)
 }
