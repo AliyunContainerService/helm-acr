@@ -94,6 +94,7 @@ func TestDownloadFileFromTlsServer(t *testing.T) {
 		Username("user"),
 		Password("pass"),
 		CAFile(testCAPath),
+		InsecureSkipVerify(true),
 	)
 	if err != nil {
 		t.Fatalf("[with ca file] expect creating a client instance but met error: %s", err)

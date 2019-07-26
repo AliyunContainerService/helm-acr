@@ -39,6 +39,7 @@ type (
 		certFile           string
 		keyFile            string
 		insecureSkipVerify bool
+		debug              bool
 	}
 
 	config struct {
@@ -78,6 +79,12 @@ func newPushCmd(args []string) *cobra.Command {
 			// If there are 4 args, this is likely being used as a downloader for acr:// protocol
 			if len(args) == 4 && strings.HasPrefix(args[3], Protocol) {
 				p.setFieldsFromEnv()
+				if p.debug {
+					_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Args %s\n", args)
+					if err != nil {
+						return err
+					}
+				}
 				return p.download(args[3])
 			}
 
@@ -102,6 +109,7 @@ func newPushCmd(args []string) *cobra.Command {
 	f.StringVarP(&p.keyFile, "key-file", "", "", "Identify HTTPS client using this SSL key file [$HELM_REPO_KEY_FILE]")
 	f.BoolVarP(&p.insecureSkipVerify, "insecure", "", false, "Connect to server with an insecure way by skipping certificate verification [$HELM_REPO_INSECURE]")
 	f.BoolVarP(&p.forceUpload, "force", "f", false, "Force upload even if chart version exists")
+	f.BoolVarP(&p.debug, "debug", "d", false, "Debug mode")
 	f.Parse(args)
 	return cmd
 }
@@ -137,7 +145,9 @@ func (p *pushCmd) setFieldsFromEnv() {
 	if v, ok := os.LookupEnv("HELM_REPO_INSECURE"); ok {
 		p.insecureSkipVerify, _ = strconv.ParseBool(v)
 	}
-
+	if v, ok := os.LookupEnv("HELM_REPO_PLUGIN_DEBUG"); ok {
+		p.debug, _ = strconv.ParseBool(v)
+	}
 	if p.accessToken == "" {
 		p.setAccessTokenFromConfigFile()
 	}
@@ -205,6 +215,13 @@ func (p *pushCmd) push() error {
 		password = p.password
 	}
 
+	if p.debug {
+		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Username %s Password %s\n", username, password)
+		if err != nil {
+			return err
+		}
+	}
+
 	// in case the repo is stored with acr:// protocol, remove it
 	var url string
 	if p.useHTTP {
@@ -225,6 +242,7 @@ func (p *pushCmd) push() error {
 		cm.KeyFile(p.keyFile),
 		cm.InsecureSkipVerify(p.insecureSkipVerify),
 		cm.AutoTokenAuth(true),
+		cm.Debug(p.debug),
 	)
 
 	if err != nil {
@@ -288,10 +306,35 @@ func (p *pushCmd) download(fileURL string) error {
 		parsedURL.Scheme = "https"
 	}
 
+	var username, password string
+	var repo *helm.Repo
+
+	// auth info from repo file
+	if p.username == "" || p.password == "" {
+		repoUrl := strings.Replace(strings.TrimSuffix(parsedURL.String(), filePath), "https", "acr", 1)
+		repo, err = helm.GetRepoByURL(repoUrl)
+		if err != nil {
+			return err
+		}
+		username = repo.Username
+		password = repo.Password
+	} else {
+		// auth info from env or arg
+		username = p.username
+		password = p.password
+	}
+
+	if p.debug {
+		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Username %s Password %s\n", username, password)
+		if err != nil {
+			return err
+		}
+	}
+
 	client, err := cm.NewClient(
 		cm.URL(parsedURL.String()),
-		cm.Username(p.username),
-		cm.Password(p.password),
+		cm.Username(username),
+		cm.Password(password),
 		cm.AccessToken(p.accessToken),
 		cm.AuthHeader(p.authHeader),
 		cm.ContextPath(p.contextPath),
@@ -300,6 +343,7 @@ func (p *pushCmd) download(fileURL string) error {
 		cm.KeyFile(p.keyFile),
 		cm.InsecureSkipVerify(p.insecureSkipVerify),
 		cm.AutoTokenAuth(true),
+		cm.Debug(p.debug),
 	)
 
 	if err != nil {

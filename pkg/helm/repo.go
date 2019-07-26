@@ -1,3 +1,5 @@
+// Modifications copyright (C) 2019 Alibaba Group Holding Limited / Yuning Xie (xyn1016@gmail.com)
+
 package helm
 
 import (
@@ -16,6 +18,19 @@ type (
 		*repo.Entry
 	}
 )
+
+// GetRepoByURL returns repository by url
+func GetRepoByURL(url string) (*Repo, error) {
+	r, err := repoFile()
+	if err != nil {
+		return nil, err
+	}
+	entry, exists := findRepoEntryByURL(url, r)
+	if !exists {
+		return nil, fmt.Errorf("no repo url %q found", url)
+	}
+	return &Repo{entry}, nil
+}
 
 // GetRepoByName returns repository by name
 func GetRepoByName(name string) (*Repo, error) {
@@ -69,6 +84,19 @@ func findRepoEntry(name string, r *repo.RepoFile) (*repo.Entry, bool) {
 	exists := false
 	for _, re := range r.Repositories {
 		if re.Name == name {
+			entry = re
+			exists = true
+			break
+		}
+	}
+	return entry, exists
+}
+
+func findRepoEntryByURL(url string, r *repo.RepoFile) (*repo.Entry, bool) {
+	var entry *repo.Entry
+	exists := false
+	for _, re := range r.Repositories {
+		if strings.TrimSuffix(re.URL, "/") == strings.TrimSuffix(url, "/") {
 			entry = re
 			exists = true
 			break

@@ -60,6 +60,13 @@ func (client *Client) UploadChartPackage(chartPackagePath string, force bool) (*
 		}
 	}
 
+	if client.opts.debug {
+		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Token %s\n", accessToken)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if accessToken != "" {
 		if client.opts.authHeader != "" {
 			req.Header.Set(client.opts.authHeader, client.opts.accessToken)

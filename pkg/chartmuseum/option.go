@@ -24,6 +24,7 @@ type (
 		keyFile            string
 		insecureSkipVerify bool
 		autoTokenAuth      bool
+		debug              bool
 	}
 )
 
@@ -108,5 +109,12 @@ func InsecureSkipVerify(insecureSkipVerify bool) Option {
 func AutoTokenAuth(autoTokenAuth bool) Option {
 	return func(opts *options) {
 		opts.autoTokenAuth = autoTokenAuth
+	}
+}
+
+//Debug to indicate if we turn client's debug mode
+func Debug(debug bool) Option {
+	return func(opts *options) {
+		opts.debug = debug
 	}
 }
