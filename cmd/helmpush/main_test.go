@@ -222,6 +222,7 @@ func TestPushCmdWithTlsEnabledServer(t *testing.T) {
 	os.Setenv("HELM_REPO_CA_FILE", testCAPath)
 	os.Setenv("HELM_REPO_CERT_FILE", testServerCertPath)
 	os.Setenv("HELM_REPO_KEY_FILE", testServerKeyPath)
+	os.Setenv("HELM_REPO_INSECURE", "true")
 
 	err = cmd.RunE(cmd, args)
 	if err != nil {
