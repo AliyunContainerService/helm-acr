@@ -102,9 +102,17 @@ func newPushCmd(args []string) *cobra.Command {
 			if len(args) == 4 && strings.HasPrefix(args[3], Protocol) {
 				p.setFieldsFromEnv()
 				if p.debug {
-					_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Args %s\n", args)
-					if err != nil {
-						return err
+					for k, v := range os.Environ() {
+						_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Command Env %d: %s\n", k, v)
+						if err != nil {
+							return err
+						}
+					}
+					for k, v := range args {
+						_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Command Args %d: %s\n", k, v)
+						if err != nil {
+							return err
+						}
 					}
 				}
 				return p.download(args[3])
@@ -116,6 +124,20 @@ func newPushCmd(args []string) *cobra.Command {
 			p.chartName = args[0]
 			p.repoName = args[1]
 			p.setFieldsFromEnv()
+			if p.debug {
+				for k, v := range os.Environ() {
+					_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Command Env %d: %s\n", k, v)
+					if err != nil {
+						return err
+					}
+				}
+				for k, v := range args {
+					_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Command Args %d: %s\n", k, v)
+					if err != nil {
+						return err
+					}
+				}
+			}
 			return p.push()
 		},
 	}
@@ -381,13 +403,20 @@ func (p *pushCmd) download(fileURL string) error {
 
 	// auth info from repo file
 	if p.username == "" || p.password == "" {
+		if p.debug {
+			_, _ = fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] env does not contain username or password, reading from helm repositories file\n")
+		}
 		repoUrl := strings.Replace(strings.TrimSuffix(parsedURL.String(), filePath), "https", "acr", 1)
 		repo, err = helm.GetRepoByURL(repoUrl)
 		if err != nil {
-			return err
+			if p.debug {
+				_, _ = fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] reading from helm repositories file failed: %s\n", err)
+			}
+			// username and password are left empty
+		} else {
+			username = repo.Config.Username
+			password = repo.Config.Password
 		}
-		username = repo.Config.Username
-		password = repo.Config.Password
 	} else {
 		// auth info from env or arg
 		username = p.username
@@ -395,10 +424,7 @@ func (p *pushCmd) download(fileURL string) error {
 	}
 
 	if p.debug {
-		_, err := fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Username %s Password %s\n", username, password)
-		if err != nil {
-			return err
-		}
+		_, _ = fmt.Fprintf(os.Stderr, "[ACR PLUGIN DEBUG] Username %s Password %s\n", username, password)
 	}
 
 	client, err := cm.NewClient(
