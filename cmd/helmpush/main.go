@@ -156,7 +156,6 @@ func newPushCmd(args []string) *cobra.Command {
 	f.BoolVarP(&p.forceUpload, "force", "f", false, "Force upload even if chart version exists")
 	f.BoolVarP(&p.dependencyUpdate, "dependency-update", "d", false, `update dependencies from "requirements.yaml" to dir "charts/" before packaging`)
 	f.BoolVarP(&p.checkHelmVersion, "check-helm-version", "", false, `outputs either "2" or "3" indicating the current Helm major version`)
-	f.BoolVarP(&p.debug, "debug", "d", false, "Debug mode")
 	f.Parse(args)
 
 	v2settings.AddFlags(f)

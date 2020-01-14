@@ -33,7 +33,26 @@ func GetRepoByURL(url string) (*Repo, error) {
 	if !exists {
 		return nil, fmt.Errorf("no repo url %q found", url)
 	}
-	return &Repo{entry}, nil
+
+	// FIXME
+	// https://github.com/chartmuseum/helm-push/issues/54
+	if HelmMajorVersionCurrent() == HelmMajorVersion2 {
+		_ = os.Setenv("HELM_PLUGINS", os.Getenv("HELM_PLUGIN"))
+	}
+
+	settings := cli.New()
+	getters := getter.All(settings)
+	cr, err := repo.NewChartRepository(entry, getters)
+	if err != nil {
+		return nil, err
+	}
+
+	if HelmMajorVersionCurrent() == HelmMajorVersion2 {
+		home := v2helmHome()
+		cr.CachePath = filepath.Join(home.Repository(), "cache")
+	}
+
+	return &Repo{cr}, nil
 }
 
 // GetRepoByName returns repository by name
@@ -45,6 +64,12 @@ func GetRepoByName(name string) (*Repo, error) {
 	entry, exists := findRepoEntry(name, r)
 	if !exists {
 		return nil, fmt.Errorf("no repo named %q found", name)
+	}
+
+	// FIXME
+	// https://github.com/chartmuseum/helm-push/issues/54
+	if HelmMajorVersionCurrent() == HelmMajorVersion2 {
+		_ = os.Setenv("HELM_PLUGINS", os.Getenv("HELM_PLUGIN"))
 	}
 
 	settings := cli.New()
@@ -121,7 +146,7 @@ func findRepoEntry(name string, r *repo.File) (*repo.Entry, bool) {
 	return entry, exists
 }
 
-func findRepoEntryByURL(url string, r *repo.RepoFile) (*repo.Entry, bool) {
+func findRepoEntryByURL(url string, r *repo.File) (*repo.Entry, bool) {
 	var entry *repo.Entry
 	exists := false
 	for _, re := range r.Repositories {
