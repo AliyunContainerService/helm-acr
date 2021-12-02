@@ -1,4 +1,4 @@
-PLUGIN_NAME := push
+PLUGIN_NAME := cm-push
 
 HAS_PIP := $(shell command -v pip;)
 HAS_VENV := $(shell command -v virtualenv;)
@@ -11,10 +11,10 @@ build_windows: export GO111MODULE=on
 build_windows: export GOPROXY=https://gocenter.io
 build_windows:
 	@GOOS=windows go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/windows/amd64/helmpush cmd/helmpush/main.go  # windows
+		-o bin/windows/amd64/helm-cm-push cmd/helm-cm-push/main.go  # windows
 
 link_windows:
-	@cp bin/windows/amd64/helmpush ./bin/helmpush
+	@cp bin/windows/amd64/helm-cm-push ./bin/helm-cm-push
 
 build_linux: export GOARCH=amd64
 build_linux: export CGO_ENABLED=0
@@ -22,10 +22,10 @@ build_linux: export GO111MODULE=on
 build_linux: export GOPROXY=https://gocenter.io
 build_linux:
 	@GOOS=linux go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/linux/amd64/helmpush cmd/helmpush/main.go  # linux
+		-o bin/linux/amd64/helm-cm-push cmd/helm-cm-push/main.go  # linux
 
 link_linux:
-	@cp bin/linux/amd64/helmpush ./bin/helmpush
+	@cp bin/linux/amd64/helm-cm-push ./bin/helm-cm-push
 
 build_mac: export GOARCH=amd64
 build_mac: export CGO_ENABLED=0
@@ -33,11 +33,11 @@ build_mac: export GO111MODULE=on
 build_mac: export GOPROXY=https://gocenter.io
 build_mac:
 	@GOOS=darwin go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/darwin/amd64/helmpush cmd/helmpush/main.go # mac osx
-	@cp bin/darwin/amd64/helmpush ./bin/helmpush # For use w make install
+		-o bin/darwin/amd64/helm-cm-push cmd/helm-cm-push/main.go # mac osx
+	@cp bin/darwin/amd64/helm-cm-push ./bin/helm-cm-push # For use w make install
 
 link_mac:
-	@cp bin/darwin/amd64/helmpush ./bin/helmpush
+	@cp bin/darwin/amd64/helm-cm-push ./bin/helm-cm-push
 
 .PHONY: clean
 clean:
