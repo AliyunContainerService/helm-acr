@@ -40,7 +40,7 @@ helm repo add demo acr://hello-acr-helm.cn-hangzhou.cr.aliyuncs.com/foo/bar --us
 helm create hello-acr
 
 # push the chart
-helm push hello-acr demo
+helm cm-push hello-acr demo
 
 # delete local chart
 rm -r hello-acr
